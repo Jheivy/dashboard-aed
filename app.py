@@ -73,7 +73,13 @@ def combine(_frames: list, key: str) -> pd.DataFrame:
 @st.cache_resource(show_spinner="Ejecutando SQL…", max_entries=4)
 def run_sql(_df: pd.DataFrame, key: str, sql: str) -> pd.DataFrame:
     import duckdb
-    con = duckdb.connect()
+    # La consulta es texto escrito por el usuario: solo una sentencia SELECT, y sin acceso al disco
+    # ni a la red (read_csv('/ruta'), COPY ... TO, ATTACH, extensiones…) — solo ve la tabla `df`.
+    stmts = duckdb.extract_statements(sql)
+    if len(stmts) != 1 or stmts[0].type != duckdb.StatementType.SELECT:
+        raise ValueError("solo se permite una única consulta SELECT.")
+    con = duckdb.connect(config={"enable_external_access": False, "autoload_known_extensions": False,
+                                 "autoinstall_known_extensions": False, "lock_configuration": True})
     con.register("df", _df)
     return con.sql(sql).df()
 
