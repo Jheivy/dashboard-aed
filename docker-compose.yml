@@ -1,0 +1,16 @@
+services:
+  eda:
+    build: .
+    image: explorador-eda:latest
+    container_name: explorador-eda
+    ports:
+      - "${EDA_PORT:-8501}:8501"      # cambia el puerto con: EDA_PORT=9000 docker compose up
+    restart: unless-stopped
+    # Carpeta opcional para tener tus archivos a mano dentro del contenedor (solo lectura).
+    # Se sube igualmente desde el navegador; esto solo sirve si prefieres montar datos.
+    # volumes:
+    #   - ./datos:/data:ro
+    deploy:
+      resources:
+        limits:
+          memory: ${EDA_MEMORY:-4g}   # ajusta según el tamaño de tus datos

@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+_version_anterior/
+.git/
+.gitignore
+.vscode/
+.idea/
+*.log
+Dockerfile
+docker-compose.yml
+.dockerignore
+ejecutar.bat
+ejecutar.sh
+README.md
